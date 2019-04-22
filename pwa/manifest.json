@@ -1,0 +1,16 @@
+{
+  "short_name": "短名称",   // 添加到主屏幕的显示的名字
+  "name": "这是一个完整名称", //  用于安装横幅、启动画面显示
+  "icon": [  // 设置app在主屏幕上的显示情况
+    {
+      "src": "/imgs/boy.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    }
+  ],
+  "start_url": "/index.html",  // 应用启动的地址
+  "scope":  "/",  // 设置作用域, 默认的作用域为 manifest.json 所在文件夹。也可通更高级的路径来pwa的作用域
+  "display": "standalone",  // 设置display，PWA 启动的时候才会显示启动动画 
+  "background_color": "#2196f3", // 设置启动画面的背景颜色
+  "theme_color": "blue" // 属性可以指定 PWA 的主题颜色 于meta 标签通用
+}

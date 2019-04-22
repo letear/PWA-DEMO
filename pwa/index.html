@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="./index.css">
+  <title>PWA</title>
+</head>
+<body>
+  <div id="app">hello world</div>
+  <div class="info"></div>
+  <div>
+    <p> PWA 有哪些好处: </p>
+
+    <ul class="ul">
+
+    </ul>
+
+  </div>
+
+  <script>
+  
+   const baseURL = 'http://127.0.0.1:7777'
+  // const baseURL = 'https://91e18362.ngrok.io'
+ 
+  const headers = new Headers({
+    'Content-Type': 'application/x-www-form-urlencoded'
+  });
+
+  const request1 = new Request(`${baseURL}/getUserInfo`, {
+    method: 'GET',
+    headers,
+  });
+
+  const request2 = new Request(`${baseURL}/getPwaInfo`, {
+    method: 'GET',
+    headers,
+  });
+  // methods 1
+  fetch(request1)
+    .then(res => res.json())
+    .then(res => {
+      const { code, data } = res;
+      if (code) {
+        alert('服务器处理失败');
+        return;
+      }
+      let str = `姓名: ${data.name}, 年龄: ${data.age}, 性别: ${data.sex}`
+      document.querySelector('.info').innerHTML = str;
+    }).catch(err => {
+      alert('出错了！');
+    });
+
+    // methods 2
+    fetch(request2)
+    .then(res => res.json())
+    .then(res => {
+      const { code, data } = res;
+      if (code) {
+        alert('服务器处理失败');
+        return;
+      }
+      let str = ''
+      data.forEach(item => {
+        str += '<li>'+ item.desc +'<li>'
+      })
+      const ulDom = document.querySelector('.ul')
+      ulDom.innerHTML = str
+    }).catch(err => {
+      alert('出错了！');
+    });
+
+  </script>
+
+
+  <script>
+    if ('serviceWorker' in  navigator) {
+      window.addEventListener('load', function () {
+        // scope 是非必填字段，用来指定 sw.js文件控制的范围
+        // 对于一些大型网站而言，有时仅仅对站点的某些模块进行 PWA 改造，其余部分仍为普通的网页。因此需要通过 scope 属性去限定作用域，超出范围的部分会以浏览器的方式显示。
+        // scope 应遵循如下规则：
+          //1. 如果没有在 manifest 中设置 scope，则默认的作用域为 manifest.json 所在文件夹；
+          //2. scope 可以设置为 ../ 或者更高层级的路径来扩大PWA的作用域；
+          //3. start_url 必须在作用域范围内；
+          //4. 如果 start_url 为相对地址，其根路径受 scope 所影响；
+          //5. 如果 start_url 为绝对地址（以 / 开头），则该地址将永远以 / 作为根地址；
+
+        navigator.serviceWorker.register('/sw.js', {scope: '/'})
+          .then(function(registration) {
+            // TODO
+            // 注册成功registration
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          })
+          .catch(function(err) {
+            // 注册失败
+            console.log('ServiceWorker registration failed: ', err);
+          })
+      })
+
+      // // 当根目录下html文件更新时候 可以通过message 来通知
+      if(navigator.serviceWorker.controller) {
+        console.log('send message ::', location.href);
+        navigator.serviceWorker.controller.postMessage(location.href)
+      }
+    }
+  </script>
+</body>
+</html>
